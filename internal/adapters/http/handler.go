@@ -2,6 +2,8 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -57,6 +59,7 @@ func (h *Handler) createTodo(w http.ResponseWriter, r *http.Request) {
 
 	todo, err := h.service.Create(input.Title)
 	if err != nil {
+		log.Fatal(err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -67,6 +70,7 @@ func (h *Handler) createTodo(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) getAllTodos(w http.ResponseWriter, r *http.Request) {
 	todos, err := h.service.List()
 	if err != nil {
+		log.Fatal(err)
 		http.Error(w, "failed", 501)
 		return
 	}
@@ -82,6 +86,7 @@ func (h *Handler) getTodoById(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "todo not found", http.StatusNotFound)
 			return
 		}
+		log.Fatal(err)
 		http.Error(w, "failed", http.StatusInternalServerError)
 		return
 	}
@@ -104,7 +109,8 @@ func (h *Handler) updateTodos(w http.ResponseWriter, r *http.Request) {
 
 	todo, err := h.service.GetById(id)
 	if err != nil {
-		if err == usecases.ErrNotFound {
+		log.Printf("ada error nich, error %v", err)
+		if errors.Is(err, usecases.ErrNotFound) {
 			http.Error(w, "not found", http.StatusNotFound)
 			return
 		}
@@ -121,6 +127,7 @@ func (h *Handler) updateTodos(w http.ResponseWriter, r *http.Request) {
 
 	err = h.service.Update(todo)
 	if err != nil {
+		log.Printf("el bantay, error %v", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}

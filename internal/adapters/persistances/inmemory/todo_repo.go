@@ -1,4 +1,4 @@
-package mysql
+package inmemory
 
 import (
 	"sync"
@@ -12,7 +12,7 @@ type InMemoryTodoRepo struct {
 	todos map[string]*domain.Todo
 }
 
-func NewInMemoryRepo() *InMemoryTodoRepo {
+func NewTodoRepo() *InMemoryTodoRepo {
 	return &InMemoryTodoRepo{
 		todos: make(map[string]*domain.Todo),
 	}

@@ -1,4 +1,4 @@
-package db
+package mysql
 
 import (
 	"database/sql"
@@ -21,16 +21,11 @@ func NewAdapter(dsn string) (*Adapter, error) {
 		return nil, err
 	}
 
+	log.Print("connected to mysql database")
+
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 
 	return &Adapter{db}, err
-}
-
-func (a *Adapter) Save(title string) error {
-	query := `INSERT INTO todos (title) VALUES (?)`
-
-	_, err := a.db.Exec(query, title)
-	return err
 }

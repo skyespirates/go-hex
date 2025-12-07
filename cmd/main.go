@@ -4,15 +4,21 @@ import (
 	"log"
 	"net/http"
 
-	persistance "github.com/skyespirates/go-hex/internal/adapters/db/inmemory"
 	handler "github.com/skyespirates/go-hex/internal/adapters/http"
-	"github.com/skyespirates/go-hex/internal/usecases"
-
+	// "github.com/skyespirates/go-hex/internal/adapters/persistances/inmemory"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/skyespirates/go-hex/internal/adapters/persistances/mysql"
+	"github.com/skyespirates/go-hex/internal/usecases"
 )
 
 func main() {
-	repo := persistance.NewInMemoryRepo()
+	// repo := inmemory.NewTodoRepo()
+
+	repo, err := mysql.NewAdapter("root:secret@/mydb?parseTime=true")
+	if err != nil {
+		return
+	}
 	svc := usecases.NewTodoService(repo)
 	h := handler.NewHandler(svc)
 
